@@ -13,8 +13,8 @@ INSTANCE_ID=$(aws ec2 run-instances --image-id $AMI_ID --instance-type t3.micro 
 
 
     if [ $instance -ne "frontend" ]; then
-        IP=$(aws ec2 describe-instances --instance-ids $instance --query 'Reservations[0].Instances[0].PrivateIpAddress' --output text)
+        IP=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID --query 'Reservations[0].Instances[0].PrivateIpAddress' --output text)
     else
-        IP=$(aws ec2 describe-instances --instance-ids i-05983b70801b695b4 --query 'Reservations[0].Instances[0].PublicIpAddress' --output text)
+        IP=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID --query 'Reservations[0].Instances[0].PublicIpAddress' --output text)
     fi
 done
