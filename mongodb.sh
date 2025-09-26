@@ -45,3 +45,9 @@ VALIDATE $? "Allowing remote connections to MongoDB"
 
 systemctl restart mongod
 VALIDATE $? "Restarted MongoDB"
+
+sed -i 's/127.0.0.1/0.0.0.0/' /etc/mongod.conf
+VALIDATE $? "updaing listening port"
+
+systemctl restart mongod
+VALIDATE $? "restart is"
