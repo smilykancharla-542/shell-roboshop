@@ -28,20 +28,20 @@ VALIDATE(){ # functions receive inputs through args just like shell script args
     fi
 }
 
-dnf module disable nodejs -y
+dnf module disable nodejs -y  &>>LOG_FILE
 VALIDATE $? "disabling nodejs version is"
 
 dnf module enable nodejs:20 -y
-VALIDATE $? "enabling nodejs version is"
+VALIDATE $? "enabling nodejs version is" &>>LOG_FILE
 
-dnf install nodejs -y
-VALIDATE $? "installing nodejs is"
+dnf install nodejs -y  &>>LOG_FILE
+VALIDATE $? "installing nodejs is"  
 
 useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop
 VALIDATE $? "creating nonhuman user"
 
 mkdir /app 
-VALIDATE $? "creating directory"
+VALIDATE $? "creating directory" 
 
 curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip 
 VALIDATE $? "downloading the code"
@@ -49,22 +49,22 @@ VALIDATE $? "downloading the code"
 cd /app 
 VALIDATE $? "changing to app directory"
 
-unzip /tmp/catalogue.zip
+unzip /tmp/catalogue.zip &>>LOG_FILE
 VALIDATE $? "downloading code in app directory"
 
 cd /app
 VALIDATE $? "checking in app directory"
 
-npm install
-VALIDATE $? "installing the packages"
+npm install &>>LOG_FILE
+VALIDATE $? "installing the packages"  
 
-cp catalogue.service /etc/systemd/system/catalogue.service
+cp catalogue.service /etc/systemd/system/catalogue.service &>>LOG_FILE
 VALIDATE $? "copying systemctl service"
 
 systemctl daemon-reload
 VALIDATE $? "reloading"
 
-systemctl enable catalogue 
+systemctl enable catalogue  &>>LOG_FILE
 VALIDATE $? "enableing"
 
 systemctl start catalogue
@@ -72,10 +72,10 @@ systemctl start catalogue
 cp mongo.repo  /etc/yum.repos.d/mongo.repo
 VALIDATE $? "copying mongo repo"
 
-dnf install mongodb-mongosh -y
+dnf install mongodb-mongosh -y  &>>LOG_FILE
 VALIDATE $? "installing mongodb client"
 
-mongosh --host $MONGODB_HOST </app/db/master-data.js
+mongosh --host $MONGODB_HOST </app/db/master-data.js &>>LOG_FILE
 VALIDATE $? "load catalogue products"
 
 systemctl restart catalogue
